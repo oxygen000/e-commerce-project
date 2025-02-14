@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { fetchOrders } from "../../../redux/slices/orderSlice";
-import { RootState } from "@/redux/store";
+import { RootState, useAppDispatch } from "@/redux/store";
 
 const OrdersPage = () => {
-  const dispatch = useDispatch();
-  const { orders, loading, error } = useSelector((state: RootState) => state.orders);
+    const dispatch = useAppDispatch(); // استخدم الـ dispatch الصحيح
+    const { orders, loading, error } = useSelector((state: RootState) => state.orders);
 
   useEffect(() => {
-    dispatch(fetchOrders());
+    dispatch(fetchOrders()); // الآن لا يوجد خطأ
   }, [dispatch]);
 
   if (loading) return <p className="text-center">Loading orders...</p>;
