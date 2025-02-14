@@ -1,45 +1,59 @@
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { FaShoppingCart, FaTrashAlt } from "react-icons/fa";
+import { removeItemFromCart, updateItemQuantity, clearCart } from "../redux/slices/cartSlice";
+import { RootState } from "../redux/store";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  imageUrl: string;
-}
+const Cart = () => {
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-interface CartProps {
-  cartItems: Product[];
-  onRemoveItem: (id: string) => void;
-  onUpdateQuantity: (id: string, quantity: number) => void;
-  onClearCart: () => void;
-}
-
-const Cart: React.FC<CartProps> = ({ cartItems = [], onRemoveItem, onUpdateQuantity, onClearCart }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const toggleCart = () => setIsOpen(!isOpen);
 
-  const toggleCart = () => {
-    setIsOpen(!isOpen);
+  const handleRemoveItem = (id: string) => {
+    dispatch(removeItemFromCart(id));
   };
+
+  const handleUpdateQuantity = (id: string, quantity: number) => {
+    if (quantity > 0) {
+      dispatch(updateItemQuantity({ id, quantity }));
+    }
+  };
+
+  const handleClearCart = () => dispatch(clearCart());
+
+  const isLoggedIn = false; // Placeholder for user authentication status
+
+  const handleProceedToCheckout = () => {
+    if (!isLoggedIn) {
+      router.push("/login");
+    } else {
+      router.push("/checkout");
+    }
+  };
+
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <div className="relative">
-      {/* زر العربة في الناف بار */}
       <button
         onClick={toggleCart}
         className="relative flex items-center justify-center p-2 rounded-full bg-primary hover:bg-primary-dark transition-all"
       >
         <FaShoppingCart className="h-8 w-8 hover:text-gray-800 transition-colors duration-300 dark:hover:text-gray-300" />
-        {cartItems.length > 0 && (
+        {totalItems > 0 && (
           <span className="absolute top-0 right-0 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
-            {cartItems.length}
+            {totalItems}
           </span>
         )}
       </button>
 
-      {/* نافذة العربة مع الأنيميشن */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -50,9 +64,9 @@ const Cart: React.FC<CartProps> = ({ cartItems = [], onRemoveItem, onUpdateQuant
             className="absolute right-0 mt-4 w-96 bg-background dark:bg-gray-900 p-5 shadow-lg rounded-lg z-50 border border-gray-200 dark:border-gray-700"
           >
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-foreground">🛒 عربة التسوق</h3>
-              <button 
-                onClick={toggleCart} 
+              <h3 className="text-xl font-semibold text-foreground">🛒 Shopping Cart</h3>
+              <button
+                onClick={toggleCart}
                 className="text-gray-500 hover:text-red-500 transition-colors text-lg"
               >
                 ✖
@@ -60,11 +74,11 @@ const Cart: React.FC<CartProps> = ({ cartItems = [], onRemoveItem, onUpdateQuant
             </div>
 
             {cartItems.length === 0 ? (
-              <p className="text-center text-gray-500 dark:text-gray-400">🛒 العربة فارغة</p>
+              <p className="text-center text-gray-500 dark:text-gray-400">🛒 The cart is empty</p>
             ) : (
               <div className="space-y-4 max-h-72 overflow-y-auto">
                 {cartItems.map((item) => (
-                  <motion.div 
+                  <motion.div
                     key={item.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -73,10 +87,16 @@ const Cart: React.FC<CartProps> = ({ cartItems = [], onRemoveItem, onUpdateQuant
                     className="flex justify-between items-center border-b pb-2 border-gray-200 dark:border-gray-700"
                   >
                     <div className="flex items-center space-x-4">
-                      <img src={item.imageUrl} alt={item.name} className="w-14 h-14 rounded-lg object-cover shadow" />
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="w-14 h-14 rounded-lg object-cover shadow"
+                        width={56}
+                        height={56}
+                      />
                       <div>
                         <p className="font-semibold text-foreground">{item.name}</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">ج.م {item.price}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">E.G.P {item.price}</p>
                       </div>
                     </div>
 
@@ -86,10 +106,12 @@ const Cart: React.FC<CartProps> = ({ cartItems = [], onRemoveItem, onUpdateQuant
                         value={item.quantity}
                         min="1"
                         className="w-12 text-center bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded shadow-sm"
-                        onChange={(e) => onUpdateQuantity(item.id, parseInt(e.target.value))}
+                        onChange={(e) =>
+                          handleUpdateQuantity(item.id, parseInt(e.target.value))
+                        }
                       />
                       <button
-                        onClick={() => onRemoveItem(item.id)}
+                        onClick={() => handleRemoveItem(item.id)}
                         className="text-red-500 hover:text-red-700 transition-colors"
                       >
                         <FaTrashAlt />
@@ -100,23 +122,27 @@ const Cart: React.FC<CartProps> = ({ cartItems = [], onRemoveItem, onUpdateQuant
               </div>
             )}
 
-            {/* الإجمالي وزر الدفع */}
             {cartItems.length > 0 && (
               <div className="mt-4">
                 <div className="flex justify-between items-center text-lg font-semibold">
-                  <span className="text-foreground">الإجمالي:</span>
-                  <span className="text-primary">ج.م {cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}</span>
+                  <span className="text-foreground">Total:</span>
+                  <span className="text-primary">E.G.P {totalPrice}</span>
+                </div>
+                <div className="flex justify-between items-center text-lg font-semibold mt-2">
+                  <span className="text-foreground">Total Items:</span>
+                  <span className="text-primary">{totalItems}</span>
                 </div>
                 <button
+                  onClick={handleProceedToCheckout}
                   className="mt-3 block w-full text-center bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-all shadow"
                 >
-                  إتمام الشراء
+                  Proceed to Checkout
                 </button>
                 <button
-                  onClick={onClearCart}
+                  onClick={handleClearCart}
                   className="mt-2 block w-full text-center bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-all shadow"
                 >
-                  مسح العربة 🗑
+                  Clear Cart 🗑
                 </button>
               </div>
             )}

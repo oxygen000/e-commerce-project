@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaUserAlt, FaBars, FaTimes } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 import ThemeProvider from "./ThemeProvider";
 import Cart from "./cart";
 
@@ -30,51 +31,121 @@ export default function Header() {
   }, [menuOpen]);
 
   return (
-    <header className="p-4 bg-primary text-white shadow-lg transition-all duration-300 dark:bg-yellow-600 dark:text-black">
+    <ThemeProvider>
+        <header className="p-4 bg-primary text-white shadow-lg transition-all duration-300 dark:bg-yellow-600 dark:text-black">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-3xl font-bold transition-all duration-300">
-          متجر الملابس الإلكتروني
-        </div>
+        <motion.div
+          className="text-3xl font-bold"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          Fashion Store
+        </motion.div>
 
         <nav className="hidden md:flex space-x-6 items-center">
-          <Link href="/" className="text-lg hover:text-gray-800 transition-colors duration-300 dark:hover:text-gray-300" onClick={closeMenu}>الصفحة الرئيسية</Link>
-          <Link href="/shop" className="text-lg hover:text-gray-800 transition-colors duration-300 dark:hover:text-gray-300" onClick={closeMenu}>التسوق</Link>
-          <Link href="/offers" className="text-lg hover:text-gray-800 transition-colors duration-300 dark:hover:text-gray-300" onClick={closeMenu}>العروض</Link>
-          <Link href="/about" className="text-lg hover:text-gray-800 transition-colors duration-300 dark:hover:text-gray-300" onClick={closeMenu}>عن المتجر</Link>
-          <Link href="/features" className="text-lg hover:text-gray-800 transition-colors duration-300 dark:hover:text-gray-300" onClick={closeMenu}>المنتجات المميزة</Link>
-          <Link href="/contact" className="text-lg hover:text-gray-800 transition-colors duration-300 dark:hover:text-gray-300" onClick={closeMenu}>اتصل بنا</Link>
-          <Link href="/login" className="text-lg flex items-center hover:text-gray-800 transition-colors duration-300 dark:hover:text-gray-300" onClick={closeMenu}>
-            <FaUserAlt className="mr-2" /> تسجيل الدخول
-          </Link>
+          {["Home", "Shop", "Offers", "About", "Featured Products", "Contact"].map((item, index) => (
+            <motion.div
+              key={item}
+              className="relative group"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+            >
+              <Link
+                href={`/${item.toLowerCase().replace(" ", "")}`}
+                className="text-lg relative transition-all duration-300 group-hover:text-gray-800 dark:group-hover:text-gray-300"
+              >
+                {item}
+                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            </motion.div>
+          ))}
+
+          <motion.div
+            className="relative group"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.6 }}
+          >
+            <Link
+              href="/login"
+              className="text-lg flex items-center transition-all duration-300 group-hover:text-gray-800 dark:group-hover:text-gray-300"
+            >
+              <FaUserAlt className="mr-2" /> Login
+            </Link>
+          </motion.div>
           <Cart />
         </nav>
 
-        <button className="md:hidden text-white hover:text-gray-800 dark:hover:text-gray-300" onClick={() => setMenuOpen(!menuOpen)}>
+        <motion.button
+          className="md:hidden text-white hover:text-gray-800 dark:hover:text-gray-300 transition-transform duration-300 hover:scale-110"
+          onClick={() => setMenuOpen(!menuOpen)}
+          whileTap={{ scale: 0.9 }}
+        >
           <FaBars className="h-7 w-7" />
-        </button>
+        </motion.button>
       </div>
 
-      <div
-        id="mobile-menu"
-        className={`md:hidden fixed top-0 right-0 bg-yellow-600 text-white w-64 h-full transform ${menuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out z-50 dark:bg-yellow-700 dark:text-black`}
-      >
-        <div className="p-6 space-y-6">
-          <button className="absolute top-4 left-4 text-white dark:text-black" onClick={closeMenu}>
-            <FaTimes className="h-7 w-7" />
-          </button>
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            id="mobile-menu"
+            initial={{ x: "100%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "100%", opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="md:hidden fixed top-0 right-0 bg-yellow-600 text-white w-64 h-full z-50 dark:bg-yellow-700 dark:text-black shadow-lg"
+          >
+            <div className="p-6 space-y-6">
+              <motion.button
+                className="absolute top-4 left-4 text-white dark:text-black transition-transform duration-300 hover:scale-110"
+                onClick={closeMenu}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FaTimes className="h-7 w-7" />
+              </motion.button>
 
-          <Link href="/" className="block text-xl py-3 hover:text-gray-800 dark:hover:text-gray-300" onClick={closeMenu}>الصفحة الرئيسية</Link>
-          <Link href="/shop" className="block text-xl py-3 hover:text-gray-800 dark:hover:text-gray-300" onClick={closeMenu}>التسوق</Link>
-          <Link href="/offers" className="block text-xl py-3 hover:text-gray-800 dark:hover:text-gray-300" onClick={closeMenu}>العروض</Link>
-          <Link href="/about" className="block text-xl py-3 hover:text-gray-800 dark:hover:text-gray-300" onClick={closeMenu}>عن المتجر</Link>
-          <Link href="/features" className="block text-xl py-3 hover:text-gray-800 dark:hover:text-gray-300" onClick={closeMenu}>المنتجات المميزة</Link>
-          <Link href="/contact" className="block text-xl py-3 hover:text-gray-800 dark:hover:text-gray-300" onClick={closeMenu}>اتصل بنا</Link>
-          <Link href="/login" className="block text-xl py-3 flex items-center hover:text-gray-800 dark:hover:text-gray-300" onClick={closeMenu}>
-            <FaUserAlt className="mr-2" /> تسجيل الدخول
-          </Link>
-        </div>
-      </div>
-      <ThemeProvider />
+              {["Home", "Shop", "Offers", "About", "Featured Products", "Contact"].map((item, index) => (
+                <motion.div
+                  key={item}
+                  className="relative group"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <Link
+                    href={`/${item.toLowerCase().replace(" ", "")}`}
+                    className="block text-xl py-3 transition-all duration-300 group-hover:text-gray-800 dark:group-hover:text-gray-300"
+                    onClick={closeMenu}
+                  >
+                    {item}
+                  </Link>
+                </motion.div>
+              ))}
+
+              <motion.div
+                className="relative group"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.6 }}
+              >
+                <Link
+                  href="/login"
+                  className=" text-xl py-3 flex items-center transition-all duration-300 group-hover:text-gray-800 dark:group-hover:text-gray-300"
+                  onClick={closeMenu}
+                >
+                  <FaUserAlt className="mr-2" /> Login
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      
     </header>
+      </ThemeProvider>
+   
   );
 }

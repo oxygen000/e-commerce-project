@@ -9,7 +9,7 @@ import ProductSection from "@/components/ProductSection";
 export default function Home() {
   return (
     <div className="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      <Header cartCount={0} />
+      <Header/>
       <SearchBar allProducts={[]} />
       <HeroSection />
       <FeaturedCategories />

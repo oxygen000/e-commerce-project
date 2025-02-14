@@ -7,20 +7,20 @@ const ForgotPassword = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // هنا يمكنك إضافة المنطق لإرسال طلب إعادة تعيين كلمة المرور
-    setMessage("تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.");
+    // Here you can add logic to send a password reset request
+    setMessage("A password reset link has been sent to your email.");
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('/images/forgot-password-bg.jpg')" }}>
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-2xl backdrop-blur-md bg-opacity-80 dark:bg-opacity-90">
         <h2 className="text-3xl font-semibold text-center text-yellow-600 mb-8">
-          نسيت كلمة المرور
+          Forgot Password
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-              البريد الإلكتروني
+              Email Address
             </label>
             <input
               type="email"
@@ -35,7 +35,7 @@ const ForgotPassword = () => {
             type="submit"
             className="w-full p-4 mt-4 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
           >
-            إرسال الرابط
+            Send Reset Link
           </button>
         </form>
         {message && <p className="mt-4 text-center text-green-500">{message}</p>}

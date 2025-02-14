@@ -5,16 +5,16 @@ import Link from "next/link";
 import { FaUser, FaLock, FaSignInAlt, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Login() {
-  const [emailOrPhone, setEmailOrPhone] = useState(""); // حقل واحد لكل من البريد الإلكتروني أو رقم الهاتف
+  const [emailOrPhone, setEmailOrPhone] = useState(""); // Single field for email or phone number
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // حالة لعرض/إخفاء كلمة السر
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // تنفيذ عملية تسجيل الدخول هنا
+    // Perform login logic here
     setTimeout(() => setLoading(false), 2000);
   };
 
@@ -34,14 +34,14 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('/images/login-bg.jpg')" }}>
       <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-lg p-8 w-full max-w-lg backdrop-blur-md bg-opacity-90 dark:bg-opacity-95">
         <h2 className="text-3xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-8">
-          تسجيل الدخول
+          Login
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
             <FaUser className="absolute left-4 top-4 text-gray-500 dark:text-gray-400" />
             <input
               type="text"
-              placeholder="البريد الإلكتروني أو رقم الهاتف"
+              placeholder="Email or Phone Number"
               value={emailOrPhone}
               onChange={handleEmailOrPhoneChange}
               className="w-full pl-12 p-4 border border-gray-300 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300"
@@ -52,7 +52,7 @@ export default function Login() {
             <FaLock className="absolute left-4 top-4 text-gray-500 dark:text-gray-400" />
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="كلمة المرور"
+              placeholder="Password"
               value={password}
               onChange={handlePasswordChange}
               className="w-full pl-12 p-4 border border-gray-300 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300"
@@ -74,10 +74,10 @@ export default function Login() {
                 onChange={() => setRememberMe(!rememberMe)}
                 className="mr-2"
               />
-              البقاء متصلاً
+              Stay Logged In
             </label>
             <Link href="/forgot-password" className="text-primary hover:underline transition-all duration-300">
-              نسيت كلمة المرور؟
+              Forgot Password?
             </Link>
           </div>
           <button
@@ -85,13 +85,13 @@ export default function Login() {
             className="w-full flex justify-center items-center bg-primary text-white py-4 rounded-lg hover:bg-primary-dark transition-all duration-300"
             disabled={loading}
           >
-            {loading ? "جاري تسجيل الدخول..." : (<><FaSignInAlt className="ml-2" /> تسجيل الدخول</>)}
+            {loading ? "Logging in..." : (<><FaSignInAlt className="ml-2" /> Log In</>)}
           </button>
         </form>
         <p className="text-center text-gray-600 dark:text-gray-300 mt-6">
-          ليس لديك حساب؟
+          Don&apos;t have an account?
           <Link href="/register" className="text-primary hover:underline ml-1 transition-all duration-300">
-            سجل الآن
+            Sign Up Now
           </Link>
         </p>
       </div>

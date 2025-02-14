@@ -17,38 +17,40 @@ export default function ResetPassword() {
     setSuccessMessage("");
     setErrorMessage("");
 
-    // تحقق من تطابق كلمات المرور
+    // Check if passwords match
     if (newPassword !== confirmPassword) {
       setLoading(false);
-      setErrorMessage("كلمة المرور وتأكيد كلمة المرور لا يتطابقان.");
+      setErrorMessage("Password and confirm password do not match.");
       return;
     }
 
-    // إرسال طلب إعادة تعيين كلمة المرور (محاكاة)
+    // Simulate password reset request
     try {
-      // محاكاة لعملية إرسال الطلب إلى السيرفر
       setTimeout(() => {
         setLoading(false);
-        setSuccessMessage("تم تغيير كلمة المرور بنجاح.");
+        setSuccessMessage("Password has been successfully changed.");
       }, 2000);
     } catch {
       setLoading(false);
-      setErrorMessage("حدث خطأ أثناء إعادة تعيين كلمة المرور. حاول مرة أخرى.");
+      setErrorMessage("An error occurred while resetting the password. Please try again.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('/images/reset-password-bg.jpg')" }}>
+    <div
+      className="flex items-center justify-center min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/reset-password-bg.jpg')" }}
+    >
       <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-lg p-8 w-full max-w-lg backdrop-blur-md bg-opacity-90 dark:bg-opacity-95">
         <h2 className="text-3xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-8">
-          إعادة تعيين كلمة المرور
+          Reset Password
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
             <FaLock className="absolute left-4 top-4 text-gray-500 dark:text-gray-400" />
             <input
               type="password"
-              placeholder="كلمة المرور الجديدة"
+              placeholder="New Password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full pl-12 p-4 border border-gray-300 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300"
@@ -59,7 +61,7 @@ export default function ResetPassword() {
             <FaLock className="absolute left-4 top-4 text-gray-500 dark:text-gray-400" />
             <input
               type="password"
-              placeholder="تأكيد كلمة المرور"
+              placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full pl-12 p-4 border border-gray-300 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300"
@@ -84,14 +86,14 @@ export default function ResetPassword() {
             className="w-full flex justify-center items-center bg-primary text-white py-4 rounded-lg hover:bg-primary-dark transition-all duration-300"
             disabled={loading}
           >
-            {loading ? "جاري تحديث كلمة المرور..." : "تغيير كلمة المرور"}
+            {loading ? "Updating Password..." : "Change Password"}
           </button>
         </form>
 
         <p className="text-center text-gray-600 dark:text-gray-300 mt-6">
-          العودة إلى
+          Back to
           <Link href="/login" className="text-primary hover:underline ml-1 transition-all duration-300">
-            تسجيل الدخول
+            Login
           </Link>
         </p>
       </div>
